@@ -1,5 +1,10 @@
 # type-game
 
-TODO: add desc
+Typing game
 
-[![npm Package Version](https://img.shields.io/npm/v/type-game.svg?maxAge=3600)](https://www.npmjs.com/package/type-game)
+Hosted on [https://type-game.surge.sh/](https://type-game.surge.sh/)
+
+## Progress
+- [x] Basic physics
+- [ ] Support typing word
+- [ ] Use [ts-liveview](https://github.com/beenotung/ts-liveview) to support multiple player on the same battle
