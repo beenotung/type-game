@@ -13,19 +13,20 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "snowpack dev",
-    "test": "run-s format tsc test:ts mocha",
-    "clean": "rimraf dist",
+    "test": "run-s format tsc mocha",
+    "clean": "rimraf build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "postformat": "tslint -p . --fix",
-    "build": "run-s clean tsc",
+    "prebuild": "npm run clean",
+    "build": "snowpack build",
     "tsc": "tsc -p tsconfig.build.json",
-    "test:ts": "ts-node test/index.ts",
     "mocha": "ts-mocha \"{src,test}/**/*.spec.ts\"",
     "coverage": "nyc npm run mocha -- --reporter=progress",
     "report:update": "nyc --reporter=lcov npm run mocha -- --reporter=progress",
     "report:open": "open-cli coverage/lcov-report/index.html",
     "report": "run-s report:update report:open",
-    "prepublishOnly": "run-s test build"
+    "upload": "surge build https://type-game.surge.sh",
+    "deploy": "run-s test build upload"
   },
   "husky": {
     "hook": {
