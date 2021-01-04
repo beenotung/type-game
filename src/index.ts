@@ -1,6 +1,9 @@
 import { calcDistanceSquare } from './math'
+import { getWordSize } from './word'
 
 const canvas = document.querySelector('canvas#game') as HTMLCanvasElement
+canvas.width = 300
+canvas.height = 300
 const W = canvas.width
 const H = canvas.height
 const ctx = canvas.getContext('2d')!
@@ -31,6 +34,7 @@ const balls = [
     die: false,
     color: ballColor,
     size: ballSize,
+    word: 'T',
   },
 ]
 const rockets = [
@@ -100,7 +104,10 @@ function paint() {
   balls.forEach(ball => {
     paintShape(ball)
     ctx.fillStyle = textColor
-    ctx.fillText('A', ball.x, ball.y)
+    const wordSize = getWordSize(ball.word)
+    const x = ball.x - wordSize.width / 2
+    const y = ball.y + wordSize.height / 3
+    ctx.fillText(ball.word, x, y)
   })
   rockets.forEach(rocket => {
     if (rocket.die) {
