@@ -12,6 +12,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "start": "snowpack dev",
     "test": "run-s format tsc test:ts mocha",
     "clean": "rimraf dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -42,6 +43,7 @@
     "tslib": "^2.0.3"
   },
   "devDependencies": {
+    "@snowpack/plugin-optimize": "^0.2.10",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "@types/node": "*",
@@ -55,6 +57,7 @@
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
     "sinon": "^9.2.2",
+    "snowpack": "^2.18.3",
     "ts-mocha": "^8.0.0",
     "ts-node": "^9.1.1",
     "tslint": "^6.1.3",
