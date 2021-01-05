@@ -4,17 +4,21 @@ import { calcDistanceSquare } from './math'
 import { Shape } from './types'
 import { getWordSize } from './word'
 
+const intervalSpan = document.querySelector('#interval') as HTMLSpanElement
+const wpmSpan = document.querySelector('#wpm') as HTMLSpanElement
+paintInterval()
+
 const canvas = document.querySelector('canvas#game') as HTMLCanvasElement
 canvas.width = config.width
 canvas.height = config.height
-const W = canvas.width
-const H = canvas.height
-const ctx = canvas.getContext('2d')!
+let ctx = canvas.getContext('2d')!
 ctx.font = 'bold 16px verdana, sans-serif'
 
 let lastTime = Date.now()
 let dt: number
 let lastSpawnBallTime = Date.now()
+
+const center = newBall('')
 
 let balls = [newBall('T')]
 let rockets = [newRocket('T')]
@@ -25,8 +29,13 @@ function tick() {
   lastTime = now
 
   if (now - lastSpawnBallTime > config.spawnBallInterval) {
-    balls.push(newBall(randomWord()))
     lastSpawnBallTime = now
+    const word = randomWord()
+    const ball = newBall(word)
+    balls.push(ball)
+    if (!'auto') {
+      rockets.push(newRocket(word))
+    }
   }
 
   balls.forEach(moveBall)
@@ -41,25 +50,37 @@ function moveBall(ball: typeof balls[number]) {
   ball.y += dt * config.ballSpeed
 }
 
-function moveRocket(rocket: typeof rockets[number]) {
-  if (rocket.die) {
-    return
-  }
+function findRocketTarget(rocket: typeof rockets[number]) {
   const target = balls
-    .filter(ball => ball.word === rocket.word)
+    .filter(ball => !ball.targetBy && ball.word === rocket.word)
     .map(ball => {
       const distanceSquare = calcDistanceSquare(ball, rocket)
       return { ball, distanceSquare }
     })
     .sort((a, b) => a.distanceSquare - b.distanceSquare)[0]
-  let targetX: number
-  let targetY: number
-  if (!target) {
-    targetX = config.width / 2
-    targetY = config.height / 2
+  return target
+}
+
+function moveRocket(rocket: typeof rockets[number]) {
+  if (rocket.die) {
+    return
+  }
+  let target: Shape = center
+  let distanceSquare: number
+  if (rocket.target) {
+    target = rocket.target
   } else {
-    const ball = target.ball
-    if (target.distanceSquare < 1) {
+    const rocketTarget = findRocketTarget(rocket)
+    if (rocketTarget) {
+      target = rocket.target = rocketTarget.ball
+      target.targetBy = rocket
+      distanceSquare = rocketTarget.distanceSquare
+    }
+  }
+  distanceSquare = distanceSquare! || calcDistanceSquare(rocket, target)
+  if (target !== center) {
+    const ball = target
+    if (distanceSquare < 1) {
       ball.die = true
       ball.color = config.dieColor
       rocket.die = true
@@ -67,14 +88,13 @@ function moveRocket(rocket: typeof rockets[number]) {
       setTimeout(() => {
         balls = balls.filter(x => x !== ball)
       }, config.deadLatency)
-      config.spawnBallInterval *= 0.9
+      config.spawnBallInterval = Math.ceil(config.spawnBallInterval * 0.9)
+      paintInterval()
       return
     }
-    targetX = ball.x
-    targetY = ball.y
   }
-  let dx = rocket.x - targetX
-  let dy = rocket.y - targetY
+  let dx = rocket.x - target.x
+  let dy = rocket.y - target.y
   dx = config.rocketSpeed * Math.sign(dx)
   dy = config.rocketSpeed * Math.sign(dy)
   rocket.x -= dt * dx
@@ -86,7 +106,7 @@ function paint() {
 
   // background
   ctx.fillStyle = '#c0ffee'
-  ctx.fillRect(0, 0, W, H)
+  ctx.fillRect(0, 0, config.width, config.height)
 
   const deadBalls = balls.filter(ball => ball.die)
   const liveBalls = balls.filter(ball => !ball.die)
@@ -101,6 +121,11 @@ function paint() {
   rockets.forEach(paintWord)
 
   requestAnimationFrame(paint)
+}
+
+function paintInterval() {
+  intervalSpan.textContent = config.spawnBallInterval + ''
+  wpmSpan.textContent = Math.round((1000 / config.spawnBallInterval) * 60) + ''
 }
 
 function paintShape(shape: Shape) {
@@ -123,7 +148,23 @@ function paintWord(shape: Shape) {
 
 window.addEventListener('keypress', ev => {
   const word = ev.key.toUpperCase()
-  const rocket = newRocket(word)
-  rockets.push(rocket)
+  rockets.push(newRocket(word))
 })
+
+function resize() {
+  config.width = window.innerWidth * 0.8
+  config.height = window.innerHeight * 0.75
+
+  canvas.width = config.width
+  canvas.height = config.height
+  ctx = canvas.getContext('2d')!
+  ctx.font = 'bold 16px verdana, sans-serif'
+
+  center.x = config.width / 2
+  center.y = config.height / 2
+}
+
+resize()
+window.addEventListener('resize', resize)
+
 requestAnimationFrame(paint)

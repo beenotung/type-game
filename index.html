@@ -13,6 +13,10 @@
       display: flex;
       justify-content: center;
     }
+
+    #draft {
+      opacity: 0
+    }
   </style>
 </head>
 <body>
@@ -20,7 +24,12 @@
 <div class="game-container">
   <canvas id="game"></canvas>
 </div>
-<span id="word"></span>
+<span id="wpm"></span> wpm
+<br>
+Interval: <span id="interval"></span>
+<div id="draft">
+  <span id="word"></span>
+</div>
 <script type="module" src="/src/index.js"></script>
 </body>
 </html>

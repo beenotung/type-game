@@ -5,4 +5,6 @@ export type Shape = {
   size: number
   word: string
   die?: boolean
+  target?: Shape
+  targetBy?: Shape
 }
