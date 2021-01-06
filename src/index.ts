@@ -155,9 +155,9 @@ window.addEventListener('keypress', ev => {
 })
 
 function checkCode() {
-  if (code.endsWith('auto')) {
+  if (code.endsWith('AUTO')) {
     config.auto = true
-  } else if (code.endsWith('off')) {
+  } else if (code.endsWith('OFF')) {
     config.auto = false
   }
   if (code.length > 4) {
