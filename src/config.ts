@@ -2,6 +2,8 @@ export let config = {
   width: 300,
   height: 300,
 
+  auto: false,
+
   textColor: 'black',
 
   ballSize: 50,

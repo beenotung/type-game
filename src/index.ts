@@ -33,7 +33,7 @@ function tick() {
     const word = randomWord()
     const ball = newBall(word)
     balls.push(ball)
-    if (!'auto') {
+    if (config.auto) {
       rockets.push(newRocket(word))
     }
   }
@@ -146,10 +146,24 @@ function paintWord(shape: Shape) {
   ctx.fillText(shape.word, x, y)
 }
 
+let code = ''
 window.addEventListener('keypress', ev => {
   const word = ev.key.toUpperCase()
+  code += word
+  checkCode()
   rockets.push(newRocket(word))
 })
+
+function checkCode() {
+  if (code.endsWith('auto')) {
+    config.auto = true
+  } else if (code.endsWith('off')) {
+    config.auto = false
+  }
+  if (code.length > 4) {
+    code = code.slice(-4)
+  }
+}
 
 function resize() {
   config.width = window.innerWidth * 0.8
