@@ -21,6 +21,7 @@ export function newBall(word: string): Shape {
     size: config.ballSize,
     x,
     y,
+    startTime: Date.now(),
   }
 }
 
@@ -33,5 +34,6 @@ export function newRocket(word: string): Shape {
     size: config.rocketSize,
     x,
     y,
+    startTime: Date.now(),
   }
 }

@@ -7,8 +7,10 @@ export let config = {
   ballSize: 50,
   ballSpeed: 30,
   ballColor: 'orange',
+  targetedBallColor: 'green',
 
   spawnBallInterval: 4000,
+  learningRate: 0.5,
 
   dieColor: 'gray',
   deadLatency: 1000,

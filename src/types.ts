@@ -7,4 +7,5 @@ export type Shape = {
   die?: boolean
   target?: Shape
   targetBy?: Shape
+  startTime: number
 }

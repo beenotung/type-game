@@ -72,9 +72,12 @@ function moveRocket(rocket: typeof rockets[number]) {
   } else {
     const rocketTarget = findRocketTarget(rocket)
     if (rocketTarget) {
-      target = rocket.target = rocketTarget.ball
+      const ball = rocketTarget.ball
+      ball.color = config.targetedBallColor
+      target = rocket.target = ball
       target.targetBy = rocket
       distanceSquare = rocketTarget.distanceSquare
+      updateTime(Date.now() - ball.startTime)
     }
   }
   distanceSquare = distanceSquare! || calcDistanceSquare(rocket, target)
@@ -88,8 +91,8 @@ function moveRocket(rocket: typeof rockets[number]) {
       setTimeout(() => {
         balls = balls.filter(x => x !== ball)
       }, config.deadLatency)
-      config.spawnBallInterval = Math.ceil(config.spawnBallInterval * 0.9)
-      paintInterval()
+      // config.spawnBallInterval = Math.ceil(config.spawnBallInterval * 0.9)
+      // paintInterval()
       return
     }
   }
@@ -99,6 +102,14 @@ function moveRocket(rocket: typeof rockets[number]) {
   dy = config.rocketSpeed * Math.sign(dy)
   rocket.x -= dt * dx
   rocket.y -= dt * dy
+}
+
+function updateTime(newLatency: number) {
+  const oldValue = config.spawnBallInterval
+  const alpha = config.learningRate
+  const beta = 1 - alpha
+  config.spawnBallInterval = oldValue * beta + newLatency * alpha
+  paintInterval()
 }
 
 function paint() {
