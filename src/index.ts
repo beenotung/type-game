@@ -96,8 +96,6 @@ function moveRocket(rocket: typeof rockets[number]) {
       setTimeout(() => {
         balls = balls.filter(x => x !== ball)
       }, config.deadLatency)
-      // config.spawnBallInterval = Math.ceil(config.spawnBallInterval * 0.9)
-      // paintInterval()
       return
     }
   }
