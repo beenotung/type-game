@@ -9,6 +9,7 @@ export let config = {
   ballColor: 'orange',
   targetedBallColor: 'green',
 
+  speedUpRate: 1.5,
   spawnBallInterval: 4000,
   learningRate: 0.5,
 

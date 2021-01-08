@@ -110,6 +110,7 @@ function moveRocket(rocket: typeof rockets[number]) {
 }
 
 function updateTime(newLatency: number) {
+  newLatency *= config.speedUpRate
   const oldValue = config.spawnBallInterval
   const alpha = config.learningRate
   const beta = 1 - alpha
