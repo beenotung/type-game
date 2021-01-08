@@ -48,6 +48,11 @@ function moveBall(ball: typeof balls[number]) {
     return
   }
   ball.y += dt * config.ballSpeed
+  if (ball.y > config.height) {
+    setTimeout(() => {
+      balls = balls.filter(x => x !== ball)
+    }, config.deadLatency)
+  }
 }
 
 function findRocketTarget(rocket: typeof rockets[number]) {
